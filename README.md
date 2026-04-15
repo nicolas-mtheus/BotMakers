@@ -102,6 +102,4 @@ Este projeto utiliza práticas de segurança para evitar exposição de credenci
 **Equipe Emakers Jr.**
 
 ```
-
-Se quiser, também posso te mostrar **3 melhorias que deixam esse README com cara de projeto profissional no GitHub (nível projeto open source)** — tipo badges, preview do bot e estrutura de pastas.
 ```
