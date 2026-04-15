@@ -145,4 +145,6 @@ async def setup_cadastro(ctx):
     embed = disnake.Embed(title="📝 Cadastro de Candidato", description="Selecione suas opções abaixo:", color=disnake.Color.blue())
     await ctx.send(embed=embed, view=CadastroView())
 
+bot.load_extension("gamificacao")
+
 bot.run(token)
