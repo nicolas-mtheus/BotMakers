@@ -1,13 +1,3 @@
-Quase. O conteúdo está correto, mas **algumas coisas quebraram o Markdown** do README:
-
-1. O `git clone` ficou com **link dentro do bloco bash** (isso quebra).
-2. Faltou **fechar alguns blocos de código** com ``` .
-3. A parte da **tabela de comandos** não está formatada como tabela.
-4. O `.env` também não foi fechado corretamente.
-5. O passo **4 Execução local** deveria ter bloco `bash`.
-
-A versão **corrigida** ficaria assim:
-
 ````markdown
 # 🧙‍♂️ BotMakers 2026 - Emakers Jr.
 
