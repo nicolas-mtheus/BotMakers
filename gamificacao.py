@@ -3,6 +3,7 @@ from disnake.ext import commands
 import json
 import os
 from datetime import datetime, timezone
+from callmatch import GerenciadorDinamica  # 1. Importação do novo arquivo
 
 class Gamificacao(commands.Cog):
     def __init__(self, bot):
@@ -14,8 +15,12 @@ class Gamificacao(commands.Cog):
             1493054457481531484
         ]
         self.canal_ranking = 1493053228420436068
+        
+        # 2. Inicializa o gerenciador de match
+        self.gerenciador_match = GerenciadorDinamica(bot, self) 
+        
         self.dados = self.carregar_dados()
-        print("✅ Módulo de Gamificação carregado com sucesso!")
+        print("✅ Módulo de Gamificação e Networking carregado!")
 
     def carregar_dados(self):
         if os.path.exists(self.arquivo_dados):
@@ -32,6 +37,22 @@ class Gamificacao(commands.Cog):
         if user_id not in self.dados["usuarios"]:
             self.dados["usuarios"][user_id] = {"xp": 0, "perguntas": 0, "respostas": 0}
         return self.dados["usuarios"][user_id]
+
+    # 3. Método para o callmatch.py injetar XP nos usuários
+    async def adicionar_xp_dinamica(self, membro, quantidade):
+        user_id = str(membro.id)
+        user_data = self.get_user_data(user_id)
+        user_data["xp"] += quantidade
+        self.salvar_dados()
+        await self.atualizar_ranking(membro.guild)
+
+    # 4. Listener para detectar quando alguém entra na call de fila
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        ID_CANAL_FILA = 1494319695338143835
+        # Se o usuário entrou em um canal e esse canal é o de fila
+        if after.channel and after.channel.id == ID_CANAL_FILA:
+            await self.gerenciador_match.tentar_iniciar(after.channel)
 
     async def atualizar_ranking(self, guild):
         canal = self.bot.get_channel(self.canal_ranking)
@@ -67,7 +88,7 @@ class Gamificacao(commands.Cog):
         if message.author.bot:
             return
 
-        # 1. Lógica de PERGUNTAR (@duvida)
+        # Lógica de PERGUNTAR (@duvida)
         if message.channel.id in self.canais_duvida:
             conteudo = message.clean_content.lower()
             if "@duvida" in conteudo or "@dúvida" in conteudo:
@@ -88,7 +109,7 @@ class Gamificacao(commands.Cog):
                 
                 await self.atualizar_ranking(message.guild)
 
-        # 2. Lógica de RESPONDER (@resposta)
+        # Lógica de RESPONDER (@resposta)
         if message.channel.id in self.canais_duvida and "@resposta" in message.clean_content.lower():
             if message.reference and message.reference.message_id:
                 duvida_id = str(message.reference.message_id)
@@ -136,23 +157,14 @@ class Gamificacao(commands.Cog):
                     else:
                         await message.reply("Obrigado pela ajuda! Infelizmente já se passaram mais de 30 minutos, então esta resposta não gerou pontos.")
 
-    #comando somente para admin limpar o ranking e as dúvidas ativas (para testes ou reset geral) !limpar_ranking
     @commands.command(name="limpar_ranking")
-    @commands.has_permissions(administrator=True) # Trava de segurança: só Admins podem usar
+    @commands.has_permissions(administrator=True)
     async def limpar_ranking(self, ctx):
-        # 1. Zera os dados na memória da classe
         self.dados["usuarios"] = {}
         self.dados["duvidas_ativas"] = {}
-        
-        # 2. Salva o estado vazio no gamificacao.json (limpa o arquivo físico)
         self.salvar_dados()
-        
-        # 3. Atualiza o canal do ranking para mostrar o placar zerado
         await self.atualizar_ranking(ctx.guild)
-        
-        # 4. Feedback visual de sucesso
-        await ctx.send("🧹 **Banco de dados resetado!** O ranking e as dúvidas ativas foram limpos com sucesso.")
-        
-# Função obrigatória para o Discord.py carregar o módulo
+        await ctx.send("🧹 **Banco de dados resetado!** O ranking e as dúvidas ativas foram limpos.")
+
 def setup(bot):
     bot.add_cog(Gamificacao(bot))
