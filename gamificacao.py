@@ -35,7 +35,11 @@ class Gamificacao(commands.Cog):
     def get_user_data(self, user_id):
         user_id = str(user_id)
         if user_id not in self.dados["usuarios"]:
-            self.dados["usuarios"][user_id] = {"xp": 0, "perguntas": 0, "respostas": 0}
+            self.dados["usuarios"][user_id] = {"xp": 0, "perguntas": 0, "respostas": 0, "networking": 0}
+
+        if "networking" not in self.dados["usuarios"][user_id]:
+            self.dados["usuarios"][user_id]["networking"] = 0
+
         return self.dados["usuarios"][user_id]
 
     # 3. Método para o callmatch.py injetar XP nos usuários
@@ -43,6 +47,7 @@ class Gamificacao(commands.Cog):
         user_id = str(membro.id)
         user_data = self.get_user_data(user_id)
         user_data["xp"] += quantidade
+        user_data["networking"] += 1
         self.salvar_dados()
         await self.atualizar_ranking(membro.guild)
 
@@ -74,9 +79,11 @@ class Gamificacao(commands.Cog):
             membro = guild.get_member(int(user_id))
             nome = membro.display_name if membro else "Usuário Desconhecido"
             medalha = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else "⭐"
+            
+            # Usamos stats.get('networking', 0) para evitar erros caso algum JSON antigo passe batido
             embed.add_field(
                 name=f"{medalha} {i+1}º Lugar: {nome}", 
-                value=f"**XP:** {stats['xp']} | Perguntas: {stats['perguntas']} | Ajudou: {stats['respostas']} vezes", 
+                value=f"**XP:** {stats['xp']} | Perguntas: {stats['perguntas']} | Ajuda: {stats['respostas']} | Networking: {stats.get('networking', 0)}", 
                 inline=False
             )
 
