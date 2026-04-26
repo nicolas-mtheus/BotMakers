@@ -1,0 +1,17 @@
+{
+    "usuarios": {
+        "1493950279987495062": {
+            "xp": 16,
+            "perguntas": 1,
+            "respostas": 0,
+            "networking": 1
+        },
+        "877332685876527125": {
+            "xp": 20,
+            "perguntas": 0,
+            "respostas": 1,
+            "networking": 1
+        }
+    },
+    "duvidas_ativas": {}
+}
