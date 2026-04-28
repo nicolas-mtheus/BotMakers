@@ -133,9 +133,43 @@ async def on_ready():
 
 @bot.command()
 async def setup_regras(ctx):
+    regras_texto = """
+Bem-vindo(a)! Para garantir um ambiente colaborativo, seguro e organizado durante o nosso Processo Seletivo, pedimos que todos sigam as diretrizes da comunidade do Discord, bem como as regras específicas do nosso servidor abaixo:
+
+🤝 **1. Respeito e Profissionalismo**
+• Trate todos com respeito, independentemente de cargo ou opinião.
+• Discussões saudáveis são sempre bem-vindas, mas não toleramos ataques pessoais, preconceito ou ofensas.
+• Mantenha um tom profissional e evite linguajar inadequado.
+
+📂 **2. Uso Adequado dos Canais**
+• Utilize cada canal para o seu propósito correto (ex.: #bate-papo-geral para conversas e #dúvidas-gerais para questões do processo).
+• Evite desviar do assunto (off-topic) em canais sérios e não faça spam.
+
+🔒 **3. Privacidade e Confidencialidade**
+• É estritamente proibido compartilhar dados confidenciais da empresa ou informações pessoais de outros candidatos e membros.
+
+💬 **4. Boas Práticas de Comunicação**
+• Seja claro(a) e objetivo(a) para facilitar a colaboração e a produtividade.
+• Utilize as formatações do Discord para facilitar a leitura em textos longos.
+• Evite o excesso de emojis, GIFs e mensagens fragmentadas que possam poluir o chat.
+
+🎧 **5. Etiqueta nos Canais de Voz**
+• Dê preferência ao uso de fones de ouvido para evitar retorno/eco.
+• Mantenha seu microfone mutado (silenciado) quando não estiver falando.
+• Não interrompa reuniões, dinâmicas ou calls em andamento sem necessidade.
+
+🏢 **6. Conformidade com as Normas da Empresa**
+• Os valores e regras da Emakers Jr também se aplicam no ambiente virtual. Respeite a hierarquia.
+• Fique atento(a) aos canais de anúncios para não perder atualizações.
+
+⚠️ **Atenção às Consequências**
+O descumprimento destas regras pode resultar em advertências e na **expulsão do Processo Seletivo**.
+
+❓ **Dúvidas ou denúncias?** Sinta-se à vontade para chamar um organizador no privado. O sigilo é garantido.
+"""
     embed = disnake.Embed(
         title="📜 Regras da Comunidade - Emakers Jr",
-        description="1. Seja respeitoso.\n2. Não use linguajar ofensivo.\n3. Siga as instruções do PS.\n\nPara prosseguir, aceite as regras abaixo.",
+        description=regras_texto,
         color=disnake.Color.red()
     )
     await ctx.send(embed=embed, view=RegrasView())
